@@ -1,0 +1,10 @@
+{
+        "name": "UbiquiBot",
+        "version": "1.0.0",
+        "description": "Multi-purpose Discord Bot.",
+        "main": "bot.js",
+        "author": "Igor Bolek",
+        "dependencies": {
+                "discord.js": "^11.5.1"
+        }
+}
