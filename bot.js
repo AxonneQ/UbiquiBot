@@ -1,7 +1,9 @@
-// references
+//import bot authentication token and discord.js functionality
 const auth = require('./auth.json');
 var Discord = require('discord.js');
-var Jokes = require('./modules/jokes.js');
+
+//import bot modules
+var Jokes = require('./modules/jokes');
 
 // Initialize Discord Bot
 var bot = new Discord.Client();
@@ -12,7 +14,8 @@ bot.on('ready', () => {
         console.log("Connected.\n");
 });
 
-bot.on('message', (message) => {
+// Listen to messages
+bot.on('message', message => {
         
         //Get the server from which the message was sent.
         let serverID = message.guild.id;
