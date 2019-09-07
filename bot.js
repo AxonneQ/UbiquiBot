@@ -12,32 +12,30 @@ bot.on('ready', () => {
         console.log("Connected.\n");
 });
 
+bot.on('message', (message) => {
+        
+        //Get the server from which the message was sent.
+        let serverID = message.guild.id;
+        
+        console.log(serverID);
 
-bot.on('message', message => {
-        // Our bot needs to know if it will execute a command
-        // It will listen for messages that will start with `!`
         var text = message.content;
         var channel = message.channel;
-        if (text.substring(0, 1) == '!') {
-                var args = text.substring(1).split(' ');
-                var cmd = args[0];
 
-                args = args.splice(1);
-                switch (cmd) {
-                        // !joke
+
+
+        if (text.substring(0, 1) == '!') {                      // If the user input start with '!'
+                var args = text.substring(1).split(' '); // extract commands and arguments
+                var command = args[0];                        // first argument is the command
+                args = args.slice(1);                              // command gets deleted from arguments
+                
+                switch (command) {
                         case 'joke':
-                                console.log(cmd + " " + args);
-                                switch(args[0]) {
-                                        case 'dark':
-                                                Jokes.getDarkJoke(channel);
-                                                break;
-
-                                        default: 
-                                                Jokes.randomizeJoke(channel);
-                                }
+                                Jokes.randomizeJoke(channel, args);
                                 break;
-                    
-                                
+                        
+                        
+                        default:
                 }
         }
 });
