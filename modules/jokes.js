@@ -1,6 +1,6 @@
 const apisrc = [
         { name: 'chuck', protocol: 'http', address: "http://api.icndb.com/jokes/random", extract: ['joke'] },
-        { name: 'misc', protocol: 'https', address: "https://icanhazdadjoke.com/", extract: '' },
+        { name: 'misc', protocol: 'http', address: "http://jokes.guyliangilsing.me/retrieveJokes.php?type=dadjoke", extract: ['joke'] },
         { name: 'prog', protocol: 'https', address: "https://sv443.net/jokeapi/category/Programming", extract: ['joke', 'setup', 'delivery'] },
 
         //Dark jokes, (need to implement toggle per server basis, turn off by default)
@@ -10,6 +10,14 @@ const apisrc = [
 module.exports = {
         randomizeJoke: function (channel, args) {
                 let jokeCategory = args[0];
+                if (jokeCategory === undefined) {
+
+                        // to implement toggle variable for nsfw jokes -> if statement, which will determine whether to include nsfw in the random joke.
+                        let rand = Math.floor(Math.random() * (apisrc.length - 1) /* + nsfw toggle value (either 0 or 1) */);
+                        jokeCategory = apisrc[rand].name;
+                        console.log(jokeCategory);
+                }
+
                 // fetch joke api according to category and protocol (http/https).
                 let jokeAPI = apisrc.find(api => api.name === jokeCategory);
                 var prot = require(jokeAPI.protocol);
@@ -31,7 +39,7 @@ module.exports = {
                                                 counter++;
                                         }
                                 });
-                                
+
                                 body = JSON.parse(body);
 
                                 // concat the multiple lines into output0
