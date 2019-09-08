@@ -3,10 +3,14 @@ const auth = require('./auth.json');
 var Discord = require('discord.js');
 
 //import bot modules
+var Clients = require('./clients/servers');
 var Jokes = require('./modules/jokes');
+var Stats = require('./modules/stats');
 
 // Initialize Discord Bot
 var bot = new Discord.Client();
+
+
 bot.login(auth.token)
         .then(console.log("Logged in."))
         .catch(console.error);
@@ -17,15 +21,15 @@ bot.on('ready', () => {
 // Listen to messages
 bot.on('message', message => {
         
-        //Get the server from which the message was sent.
-        let serverID = message.guild.id;
+        // Prepare an update to be sent
+        let update = {
+                server: message.guild,
+                channel: message.channel,
+                author: message.author
+                //... more info if needed
+        }
         
-        console.log(serverID);
-
-        var text = message.content;
-        var channel = message.channel;
-
-
+        console.log(`${server.name}/${channel.name} - ${user.username}: ${text}`);
 
         if (text.substring(0, 1) == '!') {                      // If the user input start with '!'
                 var args = text.substring(1).split(' '); // extract commands and arguments
@@ -34,8 +38,10 @@ bot.on('message', message => {
                 
                 switch (command) {
                         case 'joke':
-                                Jokes.randomizeJoke(channel, args);
+                                Jokes.randomizeJoke(message.channel, args);
                                 break;
+                        case 'stats':
+
                         
                         
                         default:
