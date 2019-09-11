@@ -38,7 +38,7 @@ bot.on('guildDelete', guild => {
 
 // Listen to messages
 bot.on('message', message => {
-
+        Clients.saveClients(bot.guilds);
         // Prepare an update to be sent
         let update = {
                 server: message.guild,

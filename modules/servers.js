@@ -1,7 +1,9 @@
 var FileSystem = require('fs');
+var clientsDataTemplate = require('./data_template');
 
 var clientsDir = './clients/data/';
 var clientsFile = './clients/client_list.json';
+
 
 module.exports = {
         //dump all current servers using bot into a JSON file
@@ -43,6 +45,14 @@ module.exports = {
                                                 console.log("Creating directory " + id);
                                                 FileSystem.mkdir(clientsDir + id, { recursive: true }, err => {
                                                         if (err) throw err;
+                                                        // Create settings file.
+                                                        FileSystem.writeFile(clientsDir + id + '/settings.json', JSON.stringify(clientsDataTemplate.settings(), null, 8), err => {
+                                                                if(err) throw err;
+                                                        })
+                                                        // Create client's members data directory.
+                                                        FileSystem.mkdir(clientsDir + id + '/users', {recursive: true}, err => {
+                                                                if(err) throw err;
+                                                        })
                                                 });
                                         }
                                 }
