@@ -3,7 +3,7 @@ const auth = require('./auth.json');
 var Discord = require('discord.js');
 
 //import bot modules
-var Clients = require('./clients/servers');
+var Clients = require('./modules/servers');
 var Jokes = require('./modules/jokes');
 var Stats = require('./modules/stats');
 
@@ -21,12 +21,20 @@ bot.on('ready', () => {
 // Update server list upon joining/leaving the server
 bot.on('guildCreate', guild => {
         Clients.saveClients(bot.guilds);
-        console.log(`UbiquiBot was added on ${guild.name} (ID: ${guild.id}).`);
+        console.log(`${bot.user.username} was added on ${guild.name} (ID: ${guild.id}).`);
 });
 bot.on('guildDelete', guild => {
         Clients.saveClients(bot.guilds);
-        console.log(`UbiquiBot was removed from ${guild.name} (ID: ${guild.id}).`);
+        console.log(`${bot.user.username} was removed from ${guild.name} (ID: ${guild.id}).`);
 });
+
+
+
+
+
+
+
+
 
 // Listen to messages
 bot.on('message', message => {
