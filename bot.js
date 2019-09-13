@@ -29,16 +29,10 @@ bot.on('guildDelete', guild => {
 });
 
 
-
-
-
-
-
-
-
 // Listen to messages
 bot.on('message', message => {
-        Clients.saveClients(bot.guilds);
+
+        /*
         // Prepare an update to be sent
         let update = {
                 server: message.guild,
@@ -46,9 +40,9 @@ bot.on('message', message => {
                 author: message.author
                 //... more info if needed
         }
-
+        
         Clients.updateClientData(update);
-
+        */
 
         if (message.content.substring(0, 1) == '!') {                      // If the user input start with '!'
                 var args = message.content.substring(1).split(' '); // extract commands and arguments
@@ -65,8 +59,9 @@ bot.on('message', message => {
                         case 'help':
                                 // TODO: a help message listing all the functionality
                                 break;
-
-
+                        case 'count':
+                                Stats.count(message.channel, args);
+                                break;
                         default:
                 }
         }
