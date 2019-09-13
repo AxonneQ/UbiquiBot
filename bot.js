@@ -16,6 +16,7 @@ bot.login(auth.token)
         .catch(console.error);
 bot.on('ready', () => {
         console.log("Connected.\n");
+        Clients.saveClients(bot.guilds);
 });
 
 // Update server list upon joining/leaving the server

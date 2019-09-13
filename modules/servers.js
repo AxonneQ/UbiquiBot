@@ -1,7 +1,8 @@
 var FileSystem = require('fs');
 var clientsDataTemplate = require('./data_template');
 
-var clientsDir = './clients/data/';
+var clientsDir = './clients/'
+var clientsDataDir = './clients/data/';
 var clientsFile = './clients/client_list.json';
 
 module.exports = {
@@ -18,20 +19,30 @@ function saveClients(serverList) {
                 idList.push(server.id);
         });
 
-        FileSystem.writeFile(clientsFile, JSON.stringify(idList), function (err) {
-                if (err) throw err;
-        });
+        // check for ./clients/ dir
+        FileSystem.readdir(clientsDir, (err, _files) => {
+                if (err) {
+                        // Create clients directory if non-existant.
+                        if (err.errno === -4058 || err.errno === -2) {
+                                FileSystem.mkdir(clientsDir, { recursive: true }, err => {
+                                        if (err) throw err;
+                                });
+                        } else throw `${err} CODE: ${err.errno}`;
+                }
+                FileSystem.writeFile(clientsFile, JSON.stringify(idList), err => {
+                        if (err) throw `${err} CODE: ${err.errno}`;
 
-        this.manageClientFiles(idList);
+                        manageClientFiles(idList);
+                });
+        });
 }
 
 function manageClientFiles(idList) {
-        FileSystem.readdir(clientsDir, (err, _files) => {
-
+        FileSystem.readdir(clientsDataDir, (err, _files) => {
                 if (err) {
                         // Create clients/data/ directory if non-existant.
-                        if (err.errno === -4058) {
-                                FileSystem.mkdir(clientsDir, { recursive: true }, err => {
+                        if (err.errno === -4058 || err.errno === -2) {
+                                FileSystem.mkdir(clientsDataDir, { recursive: true }, err => {
                                         if (err) throw err;
                                 });
                         } else throw err;
@@ -48,14 +59,14 @@ function manageClientFiles(idList) {
                         if (id !== undefined) {
                                 if (!files.includes(id)) {
                                         console.log("Creating directory " + id);
-                                        FileSystem.mkdir(clientsDir + id, { recursive: true }, err => {
+                                        FileSystem.mkdir(clientsDataDir + id, { recursive: true }, err => {
                                                 if (err) throw err;
                                                 // Create settings file.
-                                                FileSystem.writeFile(clientsDir + id + '/settings.json', JSON.stringify(clientsDataTemplate.settings(), null, 8), err => {
+                                                FileSystem.writeFile(clientsDataDir + id + '/settings.json', JSON.stringify(clientsDataTemplate.settings(), null, 8), err => {
                                                         if (err) throw err;
                                                 })
                                                 // Create client's members data directory.
-                                                FileSystem.mkdir(clientsDir + id + '/users', { recursive: true }, err => {
+                                                FileSystem.mkdir(clientsDataDir + id + '/users', { recursive: true }, err => {
                                                         if (err) throw err;
                                                 })
                                         });
@@ -68,7 +79,7 @@ function manageClientFiles(idList) {
                         if (file_id !== undefined) {
                                 if (!idList.includes(file_id)) {
                                         console.log("Removing directory " + file_id);
-                                        FileSystem.rmdir(clientsDir + file_id, { recursive: true }, err => {
+                                        FileSystem.rmdir(clientsDataDir + file_id, { recursive: true }, err => {
                                                 if (err) throw err;
                                         });
                                 }
