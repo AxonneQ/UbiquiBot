@@ -12,13 +12,13 @@ function count(channel, args) {
                         countMessages(channel.guild).then(results => {
                                 var output = `Found **${results.messageCount}** messages in **${results.channelCount}** channels:\n`;
                                 for (var i = 0; i < results.channelCount; i++) {
-                                        output += `> **${results.messages[i].channel.toString()}**: ${results.messages[i].messages.length}\n`;
+                                        output += `> ${results.messages[i].channel.toString()}: ${results.messages[i].messages.length}\n`;
                                 }
-                                for(var i = 0; i < results.noPerm.length; i++) {
-                                        output += `> **${results.noPerm[i].toString()}**: No  \`VIEW_CHANNEL\`  or  \`READ_MESSAGE_HISTORY\`  permission.\n`;
+                                for (var i = 0; i < results.noPerm.length; i++) {
+                                        output += `> ${results.noPerm[i].toString()}:  No \`VIEW_CHANNEL\`  or  \`READ_MESSAGE_HISTORY\`  permission.\n`;
                                 }
                                 channel.send(output);
-                        });
+                        }).catch(console.error);
                         break;
                 case 'here':
                         channel.send(`Counting messages in ${channel.toString()}...\n*(It might take a couple of minutes depending on message count)*`);
@@ -68,7 +68,8 @@ async function countChannelMessages(channel) {
                 if (lastMessageID) {
                         msgOptions.before = lastMessageID;
                 }
-                const messages = await channel.fetchMessages(msgOptions);
+                const messages = await channel.fetchMessages(msgOptions)
+                .catch(err => { throw `Unexpected termination in fetchMessages() function. \nError: ${err}` });
                 lastMessageID = messages.last().id;
                 allMessages.push(...messages.array());
 
