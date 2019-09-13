@@ -10,18 +10,17 @@ function count(channel, args) {
                 case 'all':
                         channel.send('Counting messages in all text channels...');
                         countMessages(channel.guild).then(results => {
-                                var output = `Found ${results.messageCount} messages in ${results.channelCount} channels:\n`;
+                                var output = `Found **${results.messageCount}** messages in **${results.channelCount}** channels:\n`;
                                 for(var i = 0; i < results.channelCount; i++) {
-                                        
-                                        output += `> **${results.messages[i].channel}**: ${results.messages[i].messages.length}\n`;
+                                        output += `> **${results.messages[i].channel.toString()}**: ${results.messages[i].messages.length}\n`;
                                 }
                                 channel.send(output);
                         });
                         break;
                 case 'here':
-                        channel.send(`Counting messages in **${channel.name}**...`);
+                        channel.send(`Counting messages in ${channel.toString()}...`);
                         countChannelMessages(channel).then(messages => {
-                                channel.send(`Found ${messages.length} messages in **${channel.name}**.\n
+                                channel.send(`Found **${messages.length}** messages in ${channel.toString()}.\n
                                 `);
                         })
                         break;
@@ -73,16 +72,16 @@ async function countChannelMessages(channel) {
 
 // Function to fetchMessages from array of channels
 async function msgFromChannels(textChannels) {
-                let allMessages = [];
-                let totalCount = 0;
+        let allMessages = [];
+        let totalCount = 0;
 
-                for(var i = 0; i < textChannels.length; i++){
-                        await countChannelMessages(textChannels[i]).then(messages => {
-                                allMessages.push({messages: messages, channel: textChannels[i].name});
-                                totalCount += messages.length;
-                        })
-                }
-                return {channelCount: textChannels.length, messages: allMessages, messageCount: totalCount};
+        for(var i = 0; i < textChannels.length; i++){
+                await countChannelMessages(textChannels[i]).then(messages => {
+                        allMessages.push({messages: messages, channel: textChannels[i]});
+                        totalCount += messages.length;
+                })
+        }
+        return {channelCount: textChannels.length, messages: allMessages, messageCount: totalCount};
 }
 
 //function for server stats: Number of servers served, Age of the bot and more.
