@@ -8,7 +8,7 @@ var Jokes = require('./modules/jokes');
 var Stats = require('./modules/stats');
 
 // Initialize Discord Bot
-var bot = new Discord.Client();
+global.bot = new Discord.Client();
 
 // Log the bot into discord servers.
 bot.login(auth.token)

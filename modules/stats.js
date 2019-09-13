@@ -8,20 +8,22 @@ module.exports = {
 function count(channel, args) {
         switch (args[0]) {
                 case 'all':
-                        channel.send('Counting messages in all text channels...');
+                        channel.send('Counting messages in all text channels...\n*(It might take a couple of minutes depending on message count)*');
                         countMessages(channel.guild).then(results => {
                                 var output = `Found **${results.messageCount}** messages in **${results.channelCount}** channels:\n`;
-                                for(var i = 0; i < results.channelCount; i++) {
+                                for (var i = 0; i < results.channelCount; i++) {
                                         output += `> **${results.messages[i].channel.toString()}**: ${results.messages[i].messages.length}\n`;
+                                }
+                                for(var i = 0; i < results.noPerm.length; i++) {
+                                        output += `> **${results.noPerm[i].toString()}**: No  \`VIEW_CHANNEL\`  or  \`READ_MESSAGE_HISTORY\`  permission.\n`;
                                 }
                                 channel.send(output);
                         });
                         break;
                 case 'here':
-                        channel.send(`Counting messages in ${channel.toString()}...`);
+                        channel.send(`Counting messages in ${channel.toString()}...\n*(It might take a couple of minutes depending on message count)*`);
                         countChannelMessages(channel).then(messages => {
-                                channel.send(`Found **${messages.length}** messages in ${channel.toString()}.\n
-                                `);
+                                channel.send(`Found **${messages.length}** messages in ${channel.toString()}.`);
                         })
                         break;
                 default:
@@ -32,18 +34,26 @@ function count(channel, args) {
 // Function to count all messages on the server
 async function countMessages(client) {
         var textChannels = [];
+        var noPermChannels = [];
         var res;
-
         // Get only text channels
         client.channels.forEach(channel => {
                 if (channel.type == 'text') {
-                        textChannels.push(channel);
+                        if (channel.memberPermissions(bot.user).has('VIEW_CHANNEL') &&
+                                channel.memberPermissions(bot.user).has('READ_MESSAGE_HISTORY')) {
+                                textChannels.push(channel);
+                        } else {
+                                noPermChannels.push(channel);
+                        }
                 }
         });
 
         await msgFromChannels(textChannels).then(results => {
                 res = results;
         });
+
+        res.noPerm = noPermChannels;
+
         return res;
 }
 
@@ -75,13 +85,13 @@ async function msgFromChannels(textChannels) {
         let allMessages = [];
         let totalCount = 0;
 
-        for(var i = 0; i < textChannels.length; i++){
+        for (var i = 0; i < textChannels.length; i++) {
                 await countChannelMessages(textChannels[i]).then(messages => {
-                        allMessages.push({messages: messages, channel: textChannels[i]});
+                        allMessages.push({ messages: messages, channel: textChannels[i] });
                         totalCount += messages.length;
                 })
         }
-        return {channelCount: textChannels.length, messages: allMessages, messageCount: totalCount};
+        return { channelCount: textChannels.length, messages: allMessages, messageCount: totalCount };
 }
 
 //function for server stats: Number of servers served, Age of the bot and more.
