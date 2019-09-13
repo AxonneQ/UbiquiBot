@@ -9,50 +9,53 @@ const apisrc = [
 ]
 
 module.exports = {
-        randomizeJoke: function (channel, args) {
-                let jokeCategory = args[0];
-                if (jokeCategory === undefined) {
-
-                        // to implement toggle variable for nsfw jokes -> if statement, which will determine whether to include nsfw in the random joke.
-                        let rand = Math.floor(Math.random() * (apisrc.length - 1) /* + nsfw toggle value (either 0 or 1) */);
-                        jokeCategory = apisrc[rand].name;
-                }
-
-                // fetch joke api according to category and protocol (http/https).
-                let jokeAPI = apisrc.find(api => api.name === jokeCategory);
-                var prot = require(jokeAPI.protocol);
-
-                prot.get(jokeAPI.address, res => {
-                        res.setEncoding("utf8");
-                        let body = "";
-                        res.on("data", chunk => {
-                                body += chunk;
-                        });
-
-                        res.on("end", () => {
-                                let counter = 0;
-
-                                //replace the key names from different APIs to one standardised name: output0,1,2,3,4....n
-                                jokeAPI.extract.forEach(function (element) {
-                                        if (body.includes(element)) {
-                                                body = body.replace(`"${element}":`, `"output${counter}":`);
-                                                counter++;
-                                        }
-                                });
-
-                                body = JSON.parse(body);
-
-                                // concat the multiple lines into output0
-                                for (let i = 1; i < counter; i++) {
-                                        body['output0'] += '\n' + body[`output${i}`];
-                                }
-
-                                let out = searchKey(body, "output0");
-                                channel.send(out);
-                        });
-                });
-        }
+        randomizeJoke
 }
+
+function randomizeJoke(channel, args) {
+        let jokeCategory = args[0];
+        if (jokeCategory === undefined) {
+
+                // to implement toggle variable for nsfw jokes -> if statement, which will determine whether to include nsfw in the random joke.
+                let rand = Math.floor(Math.random() * (apisrc.length - 1) /* + nsfw toggle value (either 0 or 1) */);
+                jokeCategory = apisrc[rand].name;
+        }
+
+        // fetch joke api according to category and protocol (http/https).
+        let jokeAPI = apisrc.find(api => api.name === jokeCategory);
+        var prot = require(jokeAPI.protocol);
+
+        prot.get(jokeAPI.address, res => {
+                res.setEncoding("utf8");
+                let body = "";
+                res.on("data", chunk => {
+                        body += chunk;
+                });
+
+                res.on("end", () => {
+                        let counter = 0;
+
+                        //replace the key names from different APIs to one standardised name: output0,1,2,3,4....n
+                        jokeAPI.extract.forEach(function (element) {
+                                if (body.includes(element)) {
+                                        body = body.replace(`"${element}":`, `"output${counter}":`);
+                                        counter++;
+                                }
+                        });
+
+                        body = JSON.parse(body);
+
+                        // concat the multiple lines into output0
+                        for (let i = 1; i < counter; i++) {
+                                body['output0'] += '\n' + body[`output${i}`];
+                        }
+
+                        let out = searchKey(body, "output0");
+                        channel.send(out);
+                });
+        });
+}
+
 
 function searchKey(object, value) {
         var result;
