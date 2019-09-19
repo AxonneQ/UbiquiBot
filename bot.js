@@ -6,6 +6,7 @@ var Discord = require('discord.js');
 var Clients = require('./modules/servers');
 var Jokes = require('./modules/jokes');
 var Stats = require('./modules/stats');
+var Help = require('./modules/help');
 
 // Initialize Discord Bot
 global.bot = new Discord.Client();
@@ -68,7 +69,7 @@ bot.on('message', message => {
                                 // TODO: display statistics (messages sent, user leaderboards etc...)
                                 break;
                         case 'help':
-                                // TODO: a help message listing all the functionality
+                                Help.manual(message.channel, args);
                                 break;
                         case 'count':
                                 Stats.count(message.channel, args);
