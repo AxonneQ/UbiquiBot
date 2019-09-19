@@ -5,26 +5,31 @@ module.exports = {
 }
 
 // Function to redirect to appropriate function depending on arguments
-function count(channel, args) {
+async function count(channel, args) {
         switch (args[0]) {
                 case 'all':
                         channel.send('Counting messages in all text channels...\n*(It might take a couple of minutes depending on message count)*');
-                        countMessages(channel.guild).then(results => {
+                        await countMessages(channel.guild).then(results => {
                                 var output = `Found **${results.messageCount}** messages in **${results.channelCount}** channels:\n`;
                                 for (var i = 0; i < results.channelCount; i++) {
                                         output += `> ${results.messages[i].channel.toString()}: ${results.messages[i].messages.length}\n`;
                                 }
                                 for (var i = 0; i < results.noPerm.length; i++) {
-                                        output += `> ${results.noPerm[i].toString()}:  No \`VIEW_CHANNEL\`  or  \`READ_MESSAGE_HISTORY\`  permission.\n`;
+                                        output += `> ${results.noPerm[i].toString()}:  No \`Read Messages\`  and/or  \`Read Message History\`  permission for this channel.\n`;
                                 }
                                 channel.send(output);
                         }).catch(console.error);
                         break;
                 case 'here':
-                        channel.send(`Counting messages in ${channel.toString()}...\n*(It might take a couple of minutes depending on message count)*`);
-                        countChannelMessages(channel).then(messages => {
-                                channel.send(`Found **${messages.length}** messages in ${channel.toString()}.`);
-                        })
+                        if (checkPermissions(channel)) {
+                                channel.send(`Counting messages in ${channel.toString()}...\n*(It might take a couple of minutes depending on message count)*`);
+                                countChannelMessages(channel).then(messages => {
+                                        channel.send(`Found **${messages.length}** messages in ${channel.toString()}.`);
+                                }).catch(console.error);
+                        } else {
+                                channel.send(`> No \`Read Messages\`  and/or  \`Read Message History\`  permission for this channel.`);
+                        }
+
                         break;
                 default:
                         channel.send('Invalid arguments. Possible arguments: !count **all**  |  **here**.');
@@ -39,8 +44,7 @@ async function countMessages(client) {
         // Get only text channels
         client.channels.forEach(channel => {
                 if (channel.type == 'text') {
-                        if (channel.memberPermissions(bot.user).has('VIEW_CHANNEL') &&
-                                channel.memberPermissions(bot.user).has('READ_MESSAGE_HISTORY')) {
+                        if (checkPermissions(channel)) {
                                 textChannels.push(channel);
                         } else {
                                 noPermChannels.push(channel);
@@ -69,7 +73,7 @@ async function countChannelMessages(channel) {
                         msgOptions.before = lastMessageID;
                 }
                 const messages = await channel.fetchMessages(msgOptions)
-                .catch(err => { throw `Unexpected termination in fetchMessages() function. \nError: ${err}` });
+                        .catch(err => { throw `Unexpected termination in fetchMessages() function. \nError: ${err}` });
                 lastMessageID = messages.last().id;
                 allMessages.push(...messages.array());
 
@@ -93,6 +97,15 @@ async function msgFromChannels(textChannels) {
                 })
         }
         return { channelCount: textChannels.length, messages: allMessages, messageCount: totalCount };
+}
+
+function checkPermissions(channel) {
+        if (channel.memberPermissions(bot.user).has('VIEW_CHANNEL') &&
+                channel.memberPermissions(bot.user).has('READ_MESSAGE_HISTORY')) {
+                return true;
+        } else {
+                return false;
+        }
 }
 
 //function for server stats: Number of servers served, Age of the bot and more.

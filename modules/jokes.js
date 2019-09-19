@@ -1,6 +1,6 @@
 const apisrc = [
         { name: 'chuck', protocol: 'http', address: "http://api.icndb.com/jokes/random", extract: ['joke'] },
-        { name: 'misc', protocol: 'http', address: "http://jokes.guyliangilsing.me/retrieveJokes.php?type=dadjoke", extract: ['joke'] },
+        { name: 'misc', protocol: 'https', address: "https://jokes.guyliangilsing.me/retrieveJokes.php?type=dadjoke", extract: ['joke'] },
         //{ name: 'mom', protocol: 'https', address: "https://api.yomomma.info/", extract: ['joke'] },
         { name: 'prog', protocol: 'https', address: "https://sv443.net/jokeapi/category/Programming", extract: ['joke', 'setup', 'delivery'] },
 

@@ -23,7 +23,17 @@ bot.on('ready', () => {
 bot.on('guildCreate', guild => {
         Clients.saveClients(bot.guilds);
         console.log(`${bot.user.username} was added on ${guild.name} (ID: ${guild.id}).`);
+        let channel = getTextChannel(guild);
+        if (channel !== undefined) {
+                channel.send(`Hi! Thanks for using ${bot.user.username}. Setting up...`);
+                Stats.count(channel, ['all']).then(function () {
+                        channel.send('Setup done. Type \`!u help\` for list of commands.');
+                });
+
+
+        }
 });
+
 bot.on('guildDelete', guild => {
         Clients.saveClients(bot.guilds);
         console.log(`${bot.user.username} was removed from ${guild.name} (ID: ${guild.id}).`);
@@ -45,8 +55,8 @@ bot.on('message', message => {
         Clients.updateClientData(update);
         */
 
-        if (message.content.substring(0, 1) == '!') {                      // If the user input start with '!'
-                var args = message.content.substring(1).split(' '); // extract commands and arguments
+        if (message.content.substring(0, 2) == '!u') {                      // If the user input start with '!u'
+                var args = message.content.substring(3).split(' '); // extract commands and arguments
                 var command = args[0];                        // first argument is the command
                 args = args.slice(1);                              // command gets deleted from arguments
 
@@ -68,3 +78,25 @@ bot.on('message', message => {
         }
 });
 
+function getTextChannel(guild) {
+        let channels = [];
+
+        if (guild.systemChannel === null) {
+                for (var k of guild.channels.keys()) {
+                        var c = guild.channels.get(k);
+
+                        if (c.type == 'text' &&
+                                c.memberPermissions(bot.user).has('VIEW_CHANNEL') &&
+                                c.memberPermissions(bot.user).has('SEND_MESSAGES')) {
+                                if (c.name == 'general' || c.name == 'welcome') {
+                                        return c;
+                                } else {
+                                        channels.push(c);
+                                }
+                        }
+                }
+        } else {
+                return guild.systemChannel;
+        }
+        return channels[0];
+}

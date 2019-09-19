@@ -1,7 +1,17 @@
 module.exports = {
         settings: () => {
                 var new_settings = {
-                        dark_jokes: 0
+                        options: {
+                                dark_jokes: 0
+                        },
+                        data: {
+                                initial_count_done: false,
+                                total_messages: 0,
+                                last_message_id: 0,
+                                channels: []
+                        }
+
+
                 }
                 return new_settings;
         },
