@@ -9,8 +9,20 @@ function manual(channel, args) {
         }
 }
 
+var general =
+`***General***
+◈   !u help
+◈   !u joke   \`misc\` | \`prog\` | \`chuck \`| \`dark\`•
+◈   !u stats   \`server\` | \`top\` | \`<username>\` |  \`me\`
+◈   !u settings   \`dark_jokes <value>\` (Admin only)`;
+
 var help = 
 `**Command List:**
-!u joke ( \`misc\` | \`prog\` | \`chuck \`| \`dark\`\* )
-!u stats ( \`server\` | \`top\` | \`<username>\` )
+${general}
+
+ • must be enabled in settings by server admin.
+ ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
 Visit https://www.github.com/AxonneQ/UbiquiBot/ to view the source code and documentation.`;
+
+
+

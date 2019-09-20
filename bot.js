@@ -74,7 +74,12 @@ bot.on('message', message => {
                         case 'count':
                                 Stats.count(message.channel, args);
                                 break;
+                        case '':
+                                //If no command, respond to the user with a joke.
+                                message.channel.send("no u.");
+                                break;
                         default:
+                                //Don't send any message if unknown argument to prevent chat spam.
                 }
         }
 });
