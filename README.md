@@ -7,6 +7,12 @@
         <a href="#invite">Invite to your server</a> |
         <a href="https://github.com/AxonneQ/UbiquiBot/wiki/Command-List">Command List</a>
 </div>
+<div align="center"> 
+
+[![Build Status](https://travis-ci.com/AxonneQ/UbiquiBot.svg?branch=master)](https://travis-ci.com/AxonneQ/UbiquiBot)
+![Repository Size](https://img.shields.io/github/repo-size/AxonneQ/UbiquiBot?label=size)
+
+</div>
 <hr>
 UbiquiBot is an open source multi-purpose discord bot.
 
