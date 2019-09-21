@@ -1,13 +1,13 @@
-<div style="text-align:center">
+<div align="center">
         <img width="20%" src="img/UbiquiBot.png">
 </div>
-<div style="text-align:center">
+<div align="center">
         <b><h2>UbiquiBot</h2></b>
         <a href="https://github.com/AxonneQ/UbiquiBot/wiki">Documentation</a> |
         <a href="#invite">Invite to your server</a> |
         <a href="https://github.com/AxonneQ/UbiquiBot/wiki/Command-List">Command List</a>
-  </div>
-  <br><hr><br>
+</div>
+<hr>
 UbiquiBot is an open source multi-purpose discord bot.
 
 Main features include:
