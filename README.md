@@ -28,7 +28,7 @@ Planned Features:
 
 ### <p name="invite"> Invite UbiquiBot to your server! </p>
 <a href="https://discordapp.com/oauth2/authorize?client_id=615313123905241182&permissions=675015872&scope=bot">
-        <img width="30%" src="img/UbiquiBotInvite.png">
+        <img width="45%" src="img/UbiquiBotInvite.png">
 </a>
 
 You can see which permissions are needed [here](https://github.com/AxonneQ/UbiquiBot/wiki/Required-Permissions).
