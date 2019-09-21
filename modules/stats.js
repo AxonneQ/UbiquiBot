@@ -2,7 +2,7 @@ module.exports = {
         count,
         countMessages,
         countChannelMessages
-}
+};
 
 // Function to redirect to appropriate function depending on arguments
 async function count(channel, args) {
@@ -11,10 +11,10 @@ async function count(channel, args) {
                         channel.send('Counting messages in all text channels...\n*(It might take a couple of minutes depending on message count)*');
                         await countMessages(channel.guild).then(results => {
                                 var output = `Found **${results.messageCount}** messages in **${results.channelCount}** channels:\n`;
-                                for (var i = 0; i < results.channelCount; i++) {
+                                for (let i = 0; i < results.channelCount; i++) {
                                         output += `> ${results.messages[i].channel.toString()}: ${results.messages[i].messages.length}\n`;
                                 }
-                                for (var i = 0; i < results.noPerm.length; i++) {
+                                for (let i = 0; i < results.noPerm.length; i++) {
                                         output += `> ${results.noPerm[i].toString()}:  No \`Read Messages\`  and/or  \`Read Message History\`  permission for this channel.\n`;
                                 }
                                 channel.send(output);
@@ -73,7 +73,7 @@ async function countChannelMessages(channel) {
                         msgOptions.before = lastMessageID;
                 }
                 const messages = await channel.fetchMessages(msgOptions)
-                        .catch(err => { throw `Unexpected termination in fetchMessages() function. \nError: ${err}` });
+                        .catch(err => { throw `Unexpected termination in fetchMessages() function. \nError: ${err}`; });
                 lastMessageID = messages.last().id;
                 allMessages.push(...messages.array());
 
@@ -81,20 +81,18 @@ async function countChannelMessages(channel) {
                         break;
                 }
         }
-
         return allMessages;
 }
 
 // Function to fetchMessages from array of channels
 async function msgFromChannels(textChannels) {
-        let allMessages = [];
-        let totalCount = 0;
+        var allMessages = [];
+        var totalCount = 0;
 
-        for (var i = 0; i < textChannels.length; i++) {
-                await countChannelMessages(textChannels[i]).then(messages => {
-                        allMessages.push({ messages: messages, channel: textChannels[i] });
-                        totalCount += messages.length;
-                })
+        for (let i = 0; i < textChannels.length; i++) {
+                const result = await countChannelMessages(textChannels[i]);
+                allMessages.push({ messages: result, channel: textChannels[i] });
+                totalCount += result.length;
         }
         return { channelCount: textChannels.length, messages: allMessages, messageCount: totalCount };
 }

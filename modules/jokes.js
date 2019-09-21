@@ -6,11 +6,11 @@ const apisrc = [
 
         //Dark jokes, (need to implement toggle per server basis, turn off by default)
         { name: 'dark', protocol: 'https', address: "https://sv443.net/jokeapi/category/Dark", extract: ['joke', 'setup', 'delivery'] }
-]
+];
 
 module.exports = {
         randomizeJoke
-}
+};
 
 function randomizeJoke(channel, args) {
         let jokeCategory = args[0];
@@ -47,7 +47,7 @@ function randomizeJoke(channel, args) {
 
                         // concat the multiple lines into output0
                         for (let i = 1; i < counter; i++) {
-                                body['output0'] += '\n' + body[`output${i}`];
+                                body[`output0`] += '\n' + body[`output${i}`];
                         }
 
                         let out = searchKey(body, "output0");

@@ -1,4 +1,4 @@
-/*jshint esversion: 6 */ 
+
 
 //import bot authentication token and discord.js functionality
 const auth = require('./auth.json');

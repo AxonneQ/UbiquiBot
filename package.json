@@ -8,7 +8,7 @@
                 "discord.js": "^11.5.1"
         },
         "scripts": {
-                "test": "jshint bot.js"
+                "test": "jshint ./modules/ bot.js"
         },
         "devDependencies": {
                 "jshint": "^2.10.2"

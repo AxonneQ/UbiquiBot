@@ -12,7 +12,7 @@ module.exports = {
                         }
 
 
-                }
+                };
                 return new_settings;
         },
 
@@ -25,7 +25,7 @@ module.exports = {
                         message_count: 0,
                         joined_discord: user.joined_discord,
                         joined_server: user.joined_server
-                }
+                };
                 return new_user;
         }
-}
+};

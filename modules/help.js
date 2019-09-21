@@ -1,6 +1,6 @@
 module.exports = {
         manual
-}
+};
 
 function manual(channel, args) {
         switch(args){
