@@ -1,13 +1,11 @@
-
-
 //import bot authentication token and discord.js functionality
 const auth = require('./auth.json');
 var Discord = require('discord.js');
 
 //import bot modules
-var Clients = require('./modules/servers');
+var Files = require('./modules/FileManager');
 var Jokes = require('./modules/jokes');
-var Stats = require('./modules/stats');
+var Messages = require('./modules/messageManager');
 var Help = require('./modules/help');
 
 // Initialize Discord Bot
@@ -19,26 +17,24 @@ bot.login(auth.token)
         .catch(console.error);
 bot.on('ready', () => {
         console.log("Connected.\n");
-        Clients.saveClients(bot.guilds);
+        Files.saveClients(bot.guilds);
 });
 
 // Update server list upon joining/leaving the server
 bot.on('guildCreate', guild => {
-        Clients.saveClients(bot.guilds);
+        Files.saveClients(bot.guilds);
         console.log(`${bot.user.username} was added on ${guild.name} (ID: ${guild.id}).`);
         let channel = getTextChannel(guild);
         if (channel !== undefined) {
                 channel.send(`Hi! Thanks for using ${bot.user.username}. Setting up...`);
-                Stats.count(channel, ['all']).then(function () {
+                Messages.count(channel, ['all']).then(function () {
                         channel.send('Setup done. Type \`!u help\` for list of commands.');
                 });
-
-
         }
 });
 
 bot.on('guildDelete', guild => {
-        Clients.saveClients(bot.guilds);
+        Files.saveClients(bot.guilds);
         console.log(`${bot.user.username} was removed from ${guild.name} (ID: ${guild.id}).`);
 });
 
@@ -55,7 +51,7 @@ bot.on('message', message => {
                 //... more info if needed
         }
         
-        Clients.updateClientData(update);
+        Files.updateClientData(update);
         */
 
         if (message.content.substring(0, 2) == '!u') {                      // If the user input start with '!u'
@@ -74,7 +70,7 @@ bot.on('message', message => {
                                 Help.manual(message.channel, args);
                                 break;
                         case 'count':
-                                Stats.count(message.channel, args);
+                                Messages.count(message.channel, args);
                                 break;
                         case '':
                                 //If no command, respond to the user with a joke.

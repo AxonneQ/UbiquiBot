@@ -4,6 +4,8 @@ module.exports = {
         countChannelMessages
 };
 
+var Files = require('./FileManager');
+
 // Function to redirect to appropriate function depending on arguments
 async function count(channel, args) {
         switch (args[0]) {
@@ -65,7 +67,6 @@ async function countMessages(client) {
 async function countChannelMessages(channel) {
         let lastMessageID;
         let msgOptions = { limit: 100 };
-
         let allMessages = [];
 
         while (true) {
@@ -74,6 +75,7 @@ async function countChannelMessages(channel) {
                 }
                 const messages = await channel.fetchMessages(msgOptions)
                         .catch(err => { throw `Unexpected termination in fetchMessages() function. \nError: ${err}`; });
+
                 lastMessageID = messages.last().id;
                 allMessages.push(...messages.array());
 
@@ -81,6 +83,10 @@ async function countChannelMessages(channel) {
                         break;
                 }
         }
+
+        let users = countUserMessages(allMessages);
+        Files.saveUserMsgCount(channel.guild.id, users);
+
         return allMessages;
 }
 
@@ -97,6 +103,7 @@ async function msgFromChannels(textChannels) {
         return { channelCount: textChannels.length, messages: allMessages, messageCount: totalCount };
 }
 
+// Check whether bot has permissions to view channel and to read message history
 function checkPermissions(channel) {
         if (channel.memberPermissions(bot.user).has('VIEW_CHANNEL') &&
                 channel.memberPermissions(bot.user).has('READ_MESSAGE_HISTORY')) {
@@ -104,6 +111,20 @@ function checkPermissions(channel) {
         } else {
                 return false;
         }
+}
+
+// Create a Map of users as keys and the message count as value e.g. 'user1_id' => 560
+function countUserMessages(messageArr){
+        let users = new Map();
+        messageArr.forEach( message => {
+                if(users.get(message.author) === undefined){
+                        users.set(message.author, 1);
+                }else {
+                        users.set(message.author, users.get(message.author) + 1);
+                }
+        });
+
+        return users;
 }
 
 //function for server stats: Number of servers served, Age of the bot and more.

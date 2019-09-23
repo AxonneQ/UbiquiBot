@@ -9,7 +9,7 @@ module.exports = {
         saveClients,
         manageClientFiles,
         editClientSettings,
-        updateClientData
+        saveUserMsgCount
 };
 
 //dump all current servers using bot into a JSON file
@@ -92,12 +92,12 @@ function editClientSettings(server_id, property, value) {
         //load the client's file, replace value (for example setting toggle)
 }
 
-function updateClientData(update) {
+function saveUserMsgCount(server_id, messageMap) {
         //load the client's file, update whatever values according to the parameter
         //console.log(update);
-}
 
-function deleteDirectory(path) {
+        //server_id, message map <user, count>
+        console.log(server_id, messageMap.size);
 
 }
 

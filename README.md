@@ -7,6 +7,7 @@
         <a href="#invite">Invite to your server</a> |
         <a href="https://github.com/AxonneQ/UbiquiBot/wiki/Command-List">Command List</a>
 </div>
+<br>
 <div align="center"> 
 
 [![Build Status](https://travis-ci.com/AxonneQ/UbiquiBot.svg?branch=master)](https://travis-ci.com/AxonneQ/UbiquiBot)
@@ -20,14 +21,17 @@ Main features include:
 
 * Random Jokes
 * Server Statistics
-* Experience System for Members (including messages since beginning of the server.)
+* Experience System for Members
 
 Planned Features:
 
 * Music features
+* Song Lyrics search
 * Hangman game
-* Text Based RPG Game
+* Blackjack
+* Points system
 * Reaction Based Role Assignment
+* Voting System
 
 ... and more!
 
