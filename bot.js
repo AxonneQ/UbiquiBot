@@ -22,20 +22,24 @@ bot.on('ready', () => {
 
 // Update server list upon joining/leaving the server
 bot.on('guildCreate', guild => {
-        Files.saveClients(bot.guilds);
-        console.log(`${bot.user.username} was added on ${guild.name} (ID: ${guild.id}).`);
-        let channel = getTextChannel(guild);
-        if (channel !== undefined) {
-                channel.send(`Hi! Thanks for using ${bot.user.username}. Setting up...`);
-                Messages.count(channel, ['all']).then(function () {
-                        channel.send('Setup done. Type \`!u help\` for list of commands.');
-                });
+        if(guild.available){
+                Files.saveClients(bot.guilds);
+                console.log(`${bot.user.username} was added on ${guild.name} (ID: ${guild.id}).`);
+                let channel = getTextChannel(guild);
+                if (channel !== undefined) {
+                        channel.send(`Hi! Thanks for using ${bot.user.username}. Setting up...`);
+                        Messages.count(channel, ['all']).then(function () {
+                                channel.send('Setup done. Type \`!u help\` for list of commands.');
+                        });
+                }
         }
 });
 
 bot.on('guildDelete', guild => {
-        Files.saveClients(bot.guilds);
-        console.log(`${bot.user.username} was removed from ${guild.name} (ID: ${guild.id}).`);
+        if(guild.available){
+                Files.saveClients(bot.guilds);
+                console.log(`${bot.user.username} was removed from ${guild.name} (ID: ${guild.id}).`);
+        }
 });
 
 
