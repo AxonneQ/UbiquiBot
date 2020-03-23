@@ -1,16 +1,20 @@
 {
-        "name": "UbiquiBot",
-        "version": "1.0.0",
-        "description": "Multi-purpose Discord Bot.",
-        "main": "bot.js",
-        "author": "Igor Bolek",
-        "dependencies": {
-                "discord.js": "^11.5.1"
-        },
-        "scripts": {
-                "test": "jshint ./modules/ bot.js"
-        },
-        "devDependencies": {
-                "jshint": "^2.10.2"
-        }
+    "name": "UbiquiBot",
+    "version": "1.0.0",
+    "description": "Multi-purpose Discord Bot.",
+    "main": "bot.js",
+    "author": "Igor Bolek",
+    "dependencies": {
+        "discord.js": "^11.5.1",
+        "prettier": "^2.0.1",
+        "translate": "^1.1.2",
+        "franc": "^5.0.0"
+    },
+    "scripts": {
+        "test": "jshint ./modules/ bot.js",
+        "start": "node bot.js"
+    },
+    "devDependencies": {
+        "jshint": "^2.10.2"
+    }
 }

@@ -1,13 +1,14 @@
 module.exports = {
-        manual
+        help
 };
 
-function manual(channel, args) {
+function help(channel, args) {
         switch(args){
                 default:
-                        channel.send(help);
+                        channel.send(commandList);
         }
 }
+
 
 var general =
 `***General***
@@ -16,7 +17,7 @@ var general =
 ◈   !u stats   \`server\` | \`top\` | \`<username>\` |  \`me\`
 ◈   !u settings   \`dark_jokes <value>\` (Admin only)`;
 
-var help = 
+var commandList = 
 `**Command List:**
 ${general}
 
