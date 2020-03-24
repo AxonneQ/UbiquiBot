@@ -23,48 +23,34 @@ async function translateMessage(channel, args) {
             channel.send(`Number must be greater than 0. Entered: ${numberOfMsgs}.`);
             return;
         } else {
-            let from;
             let to;
             let messages = [];
             const translatedMessages = [];
 
             await channel.fetchMessages({ limit: numberOfMsgs })
-                .then(msg => msg.filter(m => messages.push({author: m.member.nickname, content: m.content} )))
+                .then(msg => msg.filter(m => messages.push({ author: m.member.nickname, content: m.content })))
                 .catch(err => { throw `Unexpected termination in fetchMessages() function. \nError: ${err}`; });
 
             messages = messages.pop();
-            console.log(messages);
 
             if (args[1]) {
-                from = args[1];
-            }
-            if (args[2]) {
                 to = args[2];
             } else {
                 to = 'eng';
             }
 
-            for(let rawMsg of messages) {
-                const msg = rawMsg[1];
+            for(let msg of messages) {
+                console.log(msg);
+                await translate(msg[1][0], to)
+                    .then(output => {
+                        translatedMessages.push({author: msg[0], content: output});
+                        console.log(output);
+                    })
+                    .catch(err => { throw `Unexpected termination in translateMessage() function. \nError: ${err}`; });
+            }
 
-                if (!from) { 
-                    from = detectLanguage(msg.content) 
-                }
-
-                let msgObject = {author: msg.member.nickname, content: msg.content};
-                console.log(msgObject);
-                console.log(from);
-                const translatedMsg = await translate(msgObject.content, from, to);
-                
-                let tMsgObject = {author: msgObject.author, content: translatedMsg};
-                console.log(tMsgObject);
-
-                translatedMessages.push(translatedMsg);
-                from = undefined;
-            };
+            console.log(translatedMessages);
         }
-
-
     }
 }
 
@@ -72,6 +58,10 @@ function detectLanguage(text) {
     return franc(text);
 }
 
-async function translate(text, _from, _to) {
-    return await translator(text, { from: _from, to: _to });
+async function translate(text, _to) {
+    await translator(text, { to: _to })
+        .then(output => {
+            return output;
+        })
+        .catch(err => { throw `Unexpected termination in translate() function. \nError: ${err}`});
 }

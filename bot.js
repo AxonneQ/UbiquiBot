@@ -16,7 +16,7 @@ const Translator = require('./bot/modules/translator');
 global.bot = new Discord.Client();
 
 // Log the bot into discord servers.
-bot.login(auth.token)
+bot.login(auth.token2)
     .then(console.log("Logged in."))
     .catch(console.error);
 bot.on('ready', () => {
