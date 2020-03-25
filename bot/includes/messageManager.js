@@ -2,38 +2,45 @@ module.exports = {
     messageSwitch,
     count,
     countMessages,
-    countChannelMessages
+    countChannelMessages,
 };
 
 var Files = require('./fileManager');
 
-function messageSwitch() {
-
-}
-
+function messageSwitch() {}
 
 // Function to redirect to appropriate function depending on arguments
 async function count(channel, args) {
     switch (args[0]) {
         case 'all':
-            channel.send('Counting messages in all text channels...\n*(It might take a couple of minutes depending on message count)*');
-            await countMessages(channel.guild).then(results => {
-                var output = `Found **${results.messageCount}** messages in **${results.channelCount}** channels:\n`;
-                for (let i = 0; i < results.channelCount; i++) {
-                    output += `> ${results.messages[i].channel.toString()}: ${results.messages[i].messages.length}\n`;
-                }
-                for (let i = 0; i < results.noPerm.length; i++) {
-                    output += `> ${results.noPerm[i].toString()}:  No \`Read Messages\`  and/or  \`Read Message History\`  permission for this channel.\n`;
-                }
-                channel.send(output);
-            }).catch(console.error);
+            channel.send(
+                'Counting messages in all text channels...\n*(It might take a couple of minutes depending on message count)*'
+            );
+            await countMessages(channel.guild)
+                .then((results) => {
+                    var output = `Found **${results.messageCount}** messages in **${results.channelCount}** channels:\n`;
+                    for (let i = 0; i < results.channelCount; i++) {
+                        output += `> ${results.messages[i].channel.toString()}: ${results.messages[i].messages.length}\n`;
+                    }
+                    for (let i = 0; i < results.noPerm.length; i++) {
+                        output += `> ${results.noPerm[
+                            i
+                        ].toString()}:  No \`Read Messages\`  and/or  \`Read Message History\`  permission for this channel.\n`;
+                    }
+                    channel.send(output);
+                })
+                .catch(console.error);
             break;
         case 'here':
             if (checkPermissions(channel)) {
-                channel.send(`Counting messages in ${channel.toString()}...\n*(It might take a couple of minutes depending on message count)*`);
-                countChannelMessages(channel).then(messages => {
-                    channel.send(`Found **${messages.length}** messages in ${channel.toString()}.`);
-                }).catch(console.error);
+                channel.send(
+                    `Counting messages in ${channel.toString()}...\n*(It might take a couple of minutes depending on message count)*`
+                );
+                countChannelMessages(channel)
+                    .then((messages) => {
+                        channel.send(`Found **${messages.length}** messages in ${channel.toString()}.`);
+                    })
+                    .catch(console.error);
             } else {
                 channel.send(`> No \`Read Messages\`  and/or  \`Read Message History\`  permission for this channel.`);
             }
@@ -50,7 +57,7 @@ async function countMessages(client) {
     var noPermChannels = [];
     var res;
     // Get only text channels
-    client.channels.forEach(channel => {
+    client.channels.forEach((channel) => {
         if (channel.type == 'text') {
             if (checkPermissions(channel)) {
                 textChannels.push(channel);
@@ -60,7 +67,7 @@ async function countMessages(client) {
         }
     });
 
-    await msgFromChannels(textChannels).then(results => {
+    await msgFromChannels(textChannels).then((results) => {
         res = results;
     });
 
@@ -79,8 +86,9 @@ async function countChannelMessages(channel) {
         if (lastMessageID) {
             msgOptions.before = lastMessageID;
         }
-        const messages = await channel.fetchMessages(msgOptions)
-            .catch(err => { throw `Unexpected termination in fetchMessages() function. \nError: ${err}`; });
+        const messages = await channel.fetchMessages(msgOptions).catch((err) => {
+            throw `Unexpected termination in fetchMessages() function. \nError: ${err}`;
+        });
 
         lastMessageID = messages.last().id;
         allMessages.push(...messages.array());
@@ -111,8 +119,10 @@ async function msgFromChannels(textChannels) {
 
 // Check whether bot has permissions to view channel and to read message history
 function checkPermissions(channel) {
-    if (channel.memberPermissions(bot.user).has('VIEW_CHANNEL') &&
-        channel.memberPermissions(bot.user).has('READ_MESSAGE_HISTORY')) {
+    if (
+        channel.memberPermissions(bot.user).has('VIEW_CHANNEL') &&
+        channel.memberPermissions(bot.user).has('READ_MESSAGE_HISTORY')
+    ) {
         return true;
     } else {
         return false;
@@ -122,7 +132,7 @@ function checkPermissions(channel) {
 // Create a Map of users as keys and the message count as value e.g. 'user1_id' => 560
 function countUserMessages(messageArr) {
     let users = new Map();
-    messageArr.forEach(message => {
+    messageArr.forEach((message) => {
         if (users.get(message.author) === undefined) {
             users.set(message.author, 1);
         } else {

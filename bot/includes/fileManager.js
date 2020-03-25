@@ -10,7 +10,7 @@ module.exports = {
     manageClientFiles,
     editClientSettings,
     editClientModules,
-    saveUserMsgCount
+    saveUserMsgCount,
 };
 
 //dump all current servers using bot into a JSON file
@@ -25,12 +25,12 @@ function saveClients(serverList) {
         if (err) {
             // Create clients directory if non-existant.
             if (err.errno === -4058 || err.errno === -2) {
-                FileSystem.mkdir(clientsDir, { recursive: true }, err => {
+                FileSystem.mkdir(clientsDir, { recursive: true }, (err) => {
                     if (err) throw err;
                 });
             } else throw `${err} CODE: ${err.errno}`;
         }
-        FileSystem.writeFile(clientsFile, JSON.stringify(idList), err => {
+        FileSystem.writeFile(clientsFile, JSON.stringify(idList), (err) => {
             if (err) throw `${err} CODE: ${err.errno}`;
 
             manageClientFiles(idList);
@@ -43,7 +43,7 @@ function manageClientFiles(idList) {
         if (err) {
             // Create clients/data/ directory if non-existant.
             if (err.errno === -4058 || err.errno === -2) {
-                FileSystem.mkdir(clientsDataDir, { recursive: true }, err => {
+                FileSystem.mkdir(clientsDataDir, { recursive: true }, (err) => {
                     if (err) throw err;
                 });
             } else throw err;
@@ -51,23 +51,27 @@ function manageClientFiles(idList) {
 
         var files = Array();
         if (_files !== undefined) {
-            // store results in a new variable 
+            // store results in a new variable
             files = Array.from(_files);
         }
 
         // If current client doesn't have a file, create it.
-        idList.forEach(id => {
+        idList.forEach((id) => {
             if (id !== undefined) {
                 if (!files.includes(id)) {
-                    console.log("Creating directory " + id);
-                    FileSystem.mkdir(clientsDataDir + id, { recursive: true }, err => {
+                    console.log('Creating directory ' + id);
+                    FileSystem.mkdir(clientsDataDir + id, { recursive: true }, (err) => {
                         if (err) throw err;
                         // Create settings file.
-                        FileSystem.writeFile(clientsDataDir + id + '/settings.json', JSON.stringify(clientsDataTemplate.settings(), null, 8), err => {
-                            if (err) throw err;
-                        });
+                        FileSystem.writeFile(
+                            clientsDataDir + id + '/settings.json',
+                            JSON.stringify(clientsDataTemplate.settings(), null, 8),
+                            (err) => {
+                                if (err) throw err;
+                            }
+                        );
                         // Create client's members data directory.
-                        FileSystem.mkdir(clientsDataDir + id + '/users', { recursive: true }, err => {
+                        FileSystem.mkdir(clientsDataDir + id + '/users', { recursive: true }, (err) => {
                             if (err) throw err;
                         });
                     });
@@ -76,11 +80,11 @@ function manageClientFiles(idList) {
         });
 
         // If there exists a file but doesn't belong to any current client, delete it.
-        files.forEach(file_id => {
+        files.forEach((file_id) => {
             if (file_id !== undefined) {
                 if (!idList.includes(file_id)) {
-                    console.log("Removing directory " + file_id);
-                    FileSystem.rmdir(clientsDataDir + file_id, { recursive: true }, err => {
+                    console.log('Removing directory ' + file_id);
+                    FileSystem.rmdir(clientsDataDir + file_id, { recursive: true }, (err) => {
                         if (err) throw err;
                     });
                 }
@@ -102,13 +106,10 @@ function editClientModules(serverid, action, moduleName) {
         } else if (action == 'del') {
             //delete
         } else {
-            throw "no file";
+            throw 'no file';
         }
         console.log(data);
     });
-
-
-
 }
 
 function saveUserMsgCount(server_id, messageMap) {
@@ -117,15 +118,4 @@ function saveUserMsgCount(server_id, messageMap) {
 
     //server_id, message map <user, count>
     console.log(server_id, messageMap.size);
-
 }
-
-
-
-
-
-
-
-
-
-

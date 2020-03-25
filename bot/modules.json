@@ -1,12 +1,6 @@
 {
-        "modules": [
-                [
-                        "jokes",
-                        "Random jokes."
-                ],
-                [
-                        "user_exp",
-                        "Experience and level system for users."
-                ]
-        ]
+    "modules": [
+        ["jokes", "Random jokes."],
+        ["user_exp", "Experience and level system for users."]
+    ]
 }
