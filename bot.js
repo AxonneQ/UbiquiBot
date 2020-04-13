@@ -1,6 +1,7 @@
 //import bot authentication token and discord.js functionality
-const auth = require('./auth.json');
+const auth = require('../api-keys/discord/auth.json');
 const Discord = require('discord.js');
+require('dotenv').config();
 
 //import bot modules
 const ModuleList = require('./bot/modules.json');
@@ -16,7 +17,7 @@ const Translator = require('./bot/modules/translator');
 global.bot = new Discord.Client();
 
 // Log the bot into discord servers.
-bot.login(auth.token).then(console.log('Logged in.')).catch(console.error);
+bot.login(auth.token2).then(console.log('Logged in.')).catch(console.error);
 bot.on('ready', () => {
     console.log('Connected.\n');
     Files.saveClients(bot.guilds);

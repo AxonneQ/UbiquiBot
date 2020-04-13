@@ -5,16 +5,15 @@
     "main": "bot.js",
     "author": "Igor Bolek",
     "dependencies": {
-        "discord.js": "11.5.1",
-        "prettier": "^2.0.1",
-        "translate": "^1.1.2",
-        "franc": "^5.0.0"
+        "discord.js": "11.5.1"
     },
     "scripts": {
-        "test": "jshint ./modules/ bot.js",
+        "test": "jshint ./bot bot.js",
         "start": "node bot.js"
     },
     "devDependencies": {
-        "jshint": "^2.10.2"
+        "dotenv": "^8.2.0",
+        "jshint": "^2.10.2",
+        "prettier": "^2.0.1"
     }
 }

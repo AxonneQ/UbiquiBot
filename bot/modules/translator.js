@@ -2,19 +2,7 @@ module.exports = {
     translateMessage,
 };
 
-const auth = require('../../auth.json');
-const langs = require('../includes/supportedLanguages.json');
-const langCodeMappings = require('../includes/countryCodeMapping.json');
-
-//import external libraries
-const translator = require('translate');
-const franc = require('franc');
-
-//Initialise
-translator.engine = 'yandex';
-translator.key = auth.translateApiKey;
-const supportedLangs = new Map(Object.entries(langs));
-const langCodeMap = new Map(Object.entries(langCodeMappings));
+const translator = require('../services/translateService');
 
 async function translateMessage(message, args) {
     const channel = message.channel;
@@ -28,8 +16,7 @@ async function translateMessage(message, args) {
             channel.send(`Number must be greater than 0. Entered: ${numberOfMsgs}.`);
             return;
         } else {
-            let from = null;
-            let to = null;
+            let targetLang = null;
             let messages = [];
             const translatedMessages = [];
 
@@ -37,85 +24,44 @@ async function translateMessage(message, args) {
                 .fetchMessages({ limit: numberOfMsgs, before: message.id })
                 .then((msg) =>
                     msg.filter((m) => {
-                        messages.push({ author: m.member.nickname, content: m.content });
+                        messages.push({ author: m.member.nickname || m.author.username, content: m.content });
                     })
                 )
                 .catch((err) => {
                     throw `Unexpected termination in fetchMessages() function. \nError: ${err}`;
                 });
 
-            if (args[1] && args[2]) {
-                if (supportedLangs.has(args[1])) {
-                    from = args[1];
+            if (args[1]) {
+                if (translator.isLangSupported(args[1])) {
+                    targetLang = translator.getCodeFromLang(args[1]);
                 } else {
                     channel.send(
-                        `\`${args[1]}\`is not a valid language. Type \`!u translate list\` to see a list of supported languages.`
+                        `\`${args[1]}\` is not a valid language or language code. Type \`!u translate list\` to see a list of supported languages.`
                     );
                     return;
                 }
-
-                if (supportedLangs.has(args[2])) {
-                    to = args[2];
-                } else {
-                    channel.send(
-                        `\`${args[2]}\`is not a valid language. Type \`!u translate list\` to see a list of supported languages.`
-                    );
-                    return;
-                }
-            }
-
-            if (args[1] && !args[2]) {
-                if (supportedLangs.has(args[1])) {
-                    to = args[1];
-                } else {
-                    channel.send(
-                        `\`${args[1]}\`is not a valid language. Type \`!u translate list\` to see a list of supported languages.`
-                    );
-                    return;
-                }
-            }
-
-            if (!args[1] && !args[2]) {
-                to = 'en'; // TODO default language from server settings
+            } else {
+                targetLang = 'en'; // TODO default language from server settings
             }
 
             for (let m in messages) {
                 const msg = messages[m].content;
-                if (from === null) {
-                    from = toTwoLetter(detectLanguage(msg));
-                    console.log(`Original: ${msg}, ${from}, ${to}`);
-                }
-
-                await translate(msg, from, to)
-                    .then((output) => {
-                        translatedMessages.push({ author: messages[m].author, content: output });
-                        console.log(`Translation:`, output);
-                        from = null;
-                    })
-                    .catch((err) => console.log(err));
+                let output = await translator.translate(msg, targetLang);
+                translatedMessages.push({ author: messages[m].author, content: output.extract.translation });
+                console.log(`Translation:`, output.extract.translation);
             }
 
             translatedMessages.reverse();
 
-            let output = `Translation of last **${numberOfMsgs}** messages to **${supportedLangs.get(to)}**:`;
+            let output = `Translation of last **${numberOfMsgs}** message(s) to **${translator.getLangFromCode(targetLang)}**:`;
             for (const msg of translatedMessages) {
                 output += `\n**${msg.author}**: ${msg.content}`;
             }
 
             channel.send(output);
         }
+    } else if (args[0] === 'list') {
+        let output = 'Languages and codes:\nhttps://github.com/AxonneQ/UbiquiBot/wiki/Translator';
+        channel.send(output);
     }
-}
-
-function toTwoLetter(threeLetterCode) {
-    let output = langCodeMap.get(threeLetterCode);
-    return output;
-}
-
-function detectLanguage(text) {
-    return franc(text, { minLength: 3 });
-}
-
-async function translate(text, _from, _to) {
-    return await translator(text, { from: _from, to: _to });
 }
